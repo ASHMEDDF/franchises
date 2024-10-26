@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    image: openjdk:17-jdk
+    container_name: franchise-app
+    environment:
+      - SPRING_APPLICATION_NAME=franchise
+      - SPRING_DATASOURCE_URL=jdbc:mysql://franchise-db.cfc0k4ocoy8n.us-east-2.rds.amazonaws.com:3306/franchise
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=franchise.nequi1
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ["./mvnw", "spring-boot:run"]
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: franchise-db
+    environment:
+      - MYSQL_DATABASE=franchise
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=franchise.nequi1
+      - MYSQL_ROOT_PASSWORD=rootpassword
+    ports:
+      - "3306:3306"
