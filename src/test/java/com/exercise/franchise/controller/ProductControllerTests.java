@@ -78,7 +78,7 @@ public class ProductControllerTests {
 
         when(productService.updateStock(productId, newStock)).thenReturn(product);
 
-        mockMvc.perform(put("/products/{id}/stock", productId)
+        mockMvc.perform(put("/products/{id}/", productId)
                         .param("stock", String.valueOf(newStock)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stock").value(newStock));
@@ -93,7 +93,7 @@ public class ProductControllerTests {
 
         when(productService.updateStock(productId, newStock)).thenThrow(new RuntimeException("Product not found"));
 
-        mockMvc.perform(put("/products/{id}/stock", productId)
+        mockMvc.perform(put("/products/{id}/", productId)
                         .param("stock", String.valueOf(newStock)))
                 .andExpect(status().isNotFound());
 
