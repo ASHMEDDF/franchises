@@ -2,6 +2,7 @@ package com.exercise.franchise.service;
 
 import com.exercise.franchise.model.Franchise;
 import com.exercise.franchise.repository.FranchiseRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class FranchiseService {
 
     @Autowired

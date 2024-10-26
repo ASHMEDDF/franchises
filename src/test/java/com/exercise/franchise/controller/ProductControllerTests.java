@@ -15,8 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,5 +65,38 @@ public class ProductControllerTests {
                 .andExpect(status().isNoContent());
 
         verify(productService, times(1)).deleteProduct(productId);
+    }
+
+    @Test
+    public void testUpdateStock() throws Exception {
+        Long productId = 1L;
+        int newStock = 50;
+
+        Product product = new Product();
+        product.setId(productId);
+        product.setStock(newStock);
+
+        when(productService.updateStock(productId, newStock)).thenReturn(product);
+
+        mockMvc.perform(put("/products/{id}/stock", productId)
+                        .param("stock", String.valueOf(newStock)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.stock").value(newStock));
+
+        verify(productService, times(1)).updateStock(productId, newStock);
+    }
+
+    @Test
+    public void testUpdateStock_ProductNotFound() throws Exception {
+        Long productId = 1L;
+        int newStock = 50;
+
+        when(productService.updateStock(productId, newStock)).thenThrow(new RuntimeException("Product not found"));
+
+        mockMvc.perform(put("/products/{id}/stock", productId)
+                        .param("stock", String.valueOf(newStock)))
+                .andExpect(status().isNotFound());
+
+        verify(productService, times(1)).updateStock(productId, newStock);
     }
 }

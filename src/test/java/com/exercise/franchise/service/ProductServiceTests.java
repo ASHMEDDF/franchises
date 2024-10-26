@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,7 +57,7 @@ public class ProductServiceTests {
 
         when(branchRepository.findById(branchId)).thenReturn(Optional.of(branch));
 
-        when(productRepository.save(Mockito.any(Product.class))).thenReturn(product);
+        when(productRepository.save(any(Product.class))).thenReturn(product);
 
         Product savedProduct = productService.addProduct(branchId, product);
 
@@ -92,5 +94,40 @@ public class ProductServiceTests {
         productService.deleteProduct(productId);
 
         verify(productRepository, times(1)).deleteById(productId);
+    }
+
+    @Test
+    public void testUpdateStock() {
+        Long productId = 1L;
+        int newStock = 50;
+
+        Product product = new Product();
+        product.setId(productId);
+        product.setStock(20);
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+
+        Product updatedProduct = productService.updateStock(productId, newStock);
+
+        assertNotNull(updatedProduct);
+        assertEquals(newStock, updatedProduct.getStock());
+        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, times(1)).save(product);
+    }
+
+    @Test
+    public void testUpdateStock_ProductNotFound() {
+        Long productId = 1L;
+        int newStock = 50;
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            productService.updateStock(productId, newStock);
+        });
+
+        assertEquals("Product not found", exception.getMessage());
+        verify(productRepository, never()).save(any());
     }
 }
