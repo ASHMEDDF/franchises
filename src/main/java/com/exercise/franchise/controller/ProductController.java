@@ -1,6 +1,7 @@
 package com.exercise.franchise.controller;
 
 import com.exercise.franchise.model.Product;
+import com.exercise.franchise.model.ProductMaxStockResponse;
 import com.exercise.franchise.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -54,5 +57,14 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
+    }
+
+    @GetMapping("/franchise/{franchiseId}/max-stock")
+    public List<ProductMaxStockResponse> getProductsWithMaxStockPerBranch(@PathVariable Long franchiseId) {
+        List<Product> products = productService.getProductsWithMaxStockPerBranch(franchiseId);
+
+        return products.stream()
+                .map(product -> new ProductMaxStockResponse(product.getId(), product.getName(), product.getStock(), product.getBranch().getName()))
+                .collect(Collectors.toList());
     }
 }
