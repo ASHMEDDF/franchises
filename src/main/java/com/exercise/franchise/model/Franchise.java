@@ -1,5 +1,6 @@
 package com.exercise.franchise.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,5 +27,6 @@ public class Franchise {
     private String name;
 
     @OneToMany(mappedBy = "franchise", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Branch> branches;
 }

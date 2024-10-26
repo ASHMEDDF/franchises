@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -81,5 +83,14 @@ public class ProductServiceTests {
         when(branchRepository.findById(branchId)).thenReturn(Optional.empty());
 
         assertThrows(NoSuchElementException.class, () -> productService.addProduct(branchId, product));
+    }
+
+    @Test
+    public void testDeleteProduct() {
+        Long productId = 1L;
+
+        productService.deleteProduct(productId);
+
+        verify(productRepository, times(1)).deleteById(productId);
     }
 }

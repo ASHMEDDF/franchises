@@ -22,6 +22,11 @@ public class BranchService {
         Franchise franchise = franchiseRepository.findById(franchiseId)
                 .orElseThrow(() -> new RuntimeException("Franchise not found"));
         branch.setFranchise(franchise);
+
+        if (!franchise.getBranches().contains(branch)) {
+            franchise.getBranches().add(branch);
+        }
+
         return branchRepository.save(branch);
     }
 

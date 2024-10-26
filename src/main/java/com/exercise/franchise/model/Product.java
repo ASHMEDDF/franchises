@@ -1,5 +1,6 @@
 package com.exercise.franchise.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +23,8 @@ public class Product {
 
     private int stock;
 
-    @ManyToOne
-    @JoinColumn(name = "branch_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "branch_id", nullable = false)
+    @JsonBackReference
     private Branch branch;
 }

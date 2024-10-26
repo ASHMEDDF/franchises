@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +39,7 @@ public class BranchServiceTests {
     public void testAddBranch() {
         Franchise franchise = new Franchise();
         franchise.setId(1L);
+        franchise.setBranches(new ArrayList<>()); // Inicializar la lista de sucursales en Franchise
 
         Branch branch = new Branch();
         branch.setId(1L);
@@ -49,6 +52,7 @@ public class BranchServiceTests {
         assertNotNull(savedBranch);
         assertEquals(1L, savedBranch.getId());
         assertEquals(franchise, savedBranch.getFranchise());
+        assertTrue(franchise.getBranches().contains(savedBranch)); // Verificar que la sucursal fue añadida a la lista de sucursales de Franchise
     }
 
     @Test

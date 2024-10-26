@@ -13,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,5 +53,15 @@ public class ProductControllerTests {
                         .content(productJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("New Product"));
+    }
+
+    @Test
+    public void testDeleteProduct() throws Exception {
+        Long productId = 1L;
+
+        mockMvc.perform(delete("/products/{id}", productId))
+                .andExpect(status().isNoContent());
+
+        verify(productService, times(1)).deleteProduct(productId);
     }
 }
